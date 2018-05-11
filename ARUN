@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+CURRENT_DIR=`pwd`
+
+export LD_LIBRARY_PATH=$FASTJET/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=./map2rmm/lib/:$LD_LIBRARY_PATH
+echo "STORAGE=$STORAGE"
+
+
+# Directory with ProMC files from HepSim 
+Make_input data
+./example
+
