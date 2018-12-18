@@ -673,6 +673,8 @@ int main(int argc, char **argv)
 
 			delete [] arrayM;
 			delete [] array;
+                        for (int w1 = 0; w1 < mSize; w1++)  delete[] projArray[w1];
+                        delete[] projArray;
 
 
 			event++;
