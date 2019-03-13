@@ -78,6 +78,31 @@ float getHL(const TLorentzVector p1){
 }
 
 
+
+// return transverse mass using experimental method 
+float getMT(const TLorentzVector met, const TLorentzVector jet){
+
+     /* massless approximation 
+     double DeltaPhi = jet.DeltaPhi(met);
+     double s=2*jet.Et()*met.Et()*(1-TMath::Cos( DeltaPhi ));
+     // Mt for massless
+     double Mt_massless=0;
+     if (s>0) Mt_massless=TMath::Sqrt(s);
+     */
+
+     // Mt exact 
+     double ss= (jet.Et()+met.Et()) * (jet.Et() +met.Et()) -
+                ( (jet.Px()+met.Px())*(jet.Px() +met.Px()) ) - ( (jet.Py()+met.Py())*(jet.Py() +met.Py()) );
+     double Mt_exact=0;
+     if (ss>0) Mt_exact= TMath::Sqrt(ss);
+
+     // Mt corrected
+     //double mW_t = TMath::Sqrt(jet.Et()*jet.Et() + met.Et()*met.Et() - 2*jet.Et()*met.Et()*TMath::Cos(jet.DeltaPhi(met)));
+     //cout << "Mt_massless=" << Mt_massless << " Mt from sum=" << (met+jet).Mt() << " Mt_exact=" << Mt_exact << endl; 
+     return (float)Mt_exact;
+     }
+
+
 // create matrix with event projection
 // maxN max number of particles of a given type
 // maxNumberTypes total number of types
@@ -129,8 +154,7 @@ float**  map2rmm(const float CMS, const int maxN, const int maxNumberTypes,
 		for (unsigned int k1 = 0; k1<mJets; k1++) {
 			LParticle LPP1=(LParticle)jets.at(k1);
 			TLorentzVector LP1=LPP1.GetP();
-			TLorentzVector LM=LP1+LMET;
-			if (LMET.Et()>0) outMatrix[0][k1+INCR*maxNumber+1]=LM.Mt()/CMS;
+			if (LMET.Et()>0) outMatrix[0][k1+INCR*maxNumber+1]=getMT(LMET, LP1)/CMS;
 			outMatrix[k1+INCR*maxNumber+1][0]=getHL(LP1);
 
 			if (k1 == 0) {
@@ -160,8 +184,7 @@ float**  map2rmm(const float CMS, const int maxN, const int maxNumberTypes,
 		for (unsigned int k1 = 0; k1<mMuons; k1++) {
 			LParticle LPP1=(LParticle)muons.at(k1);
 			TLorentzVector LP1=LPP1.GetP();
-			TLorentzVector LM=LP1+LMET;
-			if (LMET.Et()>0) outMatrix[0][k1+INCR*maxNumber+1]=LM.Mt()/CMS;
+			if (LMET.Et()>0) outMatrix[0][k1+INCR*maxNumber+1]=getMT(LMET, LP1)/CMS;
 			outMatrix[k1+INCR*maxNumber+1][0]=getHL(LP1);
 
 			if (k1 == 0) {
@@ -190,8 +213,7 @@ float**  map2rmm(const float CMS, const int maxN, const int maxNumberTypes,
 		for (unsigned int k1 = 0; k1<mEle; k1++) {
 			LParticle LPP1=(LParticle)electrons.at(k1);
 			TLorentzVector LP1=LPP1.GetP();
-			TLorentzVector LM=LP1+LMET;
-			if (LMET.Et()>0) outMatrix[0][k1+INCR*maxNumber+1]=LM.Mt()/CMS;
+			if (LMET.Et()>0) outMatrix[0][k1+INCR*maxNumber+1]=getMT(LMET, LP1)/CMS;
 			outMatrix[k1+INCR*maxNumber+1][0]=getHL(LP1);
 
 			if (k1 == 0) {
@@ -220,8 +242,7 @@ float**  map2rmm(const float CMS, const int maxN, const int maxNumberTypes,
 		for (unsigned int k1 = 0; k1<mPho; k1++) {
 			LParticle LPP1=(LParticle)photons.at(k1);
 			TLorentzVector LP1=LPP1.GetP();
-			TLorentzVector LM=LP1+LMET;
-			if (LMET.Et()>0) outMatrix[0][k1+INCR*maxNumber+1]=LM.Mt()/CMS;
+			if (LMET.Et()>0) outMatrix[0][k1+INCR*maxNumber+1]=getMT(LMET, LP1)/CMS;
 			outMatrix[k1+INCR*maxNumber+1][0]=getHL(LP1);
 
 			if (k1 == 0) {
