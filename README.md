@@ -15,19 +15,25 @@ It uses input Monte Carlo data in the form of ProMC files from the [HepSim Monte
   they should return the installation paths. 
 
  3. Go to "map2rmm/" and compile the library as "make"
+    This create 2 libraries :
 
- 4. Go to the upper level and compile the example "make"
+```
+      lib/libmap2rmm.so
+      lib/libmap2rmm_static.a
+```
 
- 4. Download ProMC files from HepSim and put them to the "data" directory. Use hs-tools as: 
+ 4. Go to the upper level and compile the example.cc  "make". The compilation will link the above library
+
+ 5. Download ProMC files from HepSim and put them to the "data" directory. Use hs-tools as: 
   
 ``` 
    hs-get tev100_higgs_ttbar_mg5 data
 ```
    See the HepSim documentation. 
 
- 5. Process all files inside the directory "data" using the command "./example".
+ 6. Process all files inside the directory "data" using the command "./example".
 
- 6. Loook at the output root file "output.root" with histograms.
+ 7. Loook at the output root file "output.root" with histograms.
     The RMM data are stored as a tree "inputNN" with "proj" branch.
 
 S.Chekanov (ANL) 
