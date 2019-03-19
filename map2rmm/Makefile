@@ -1,13 +1,4 @@
 # S.Chekanov
-
-ifndef ROOTSYS
-$(error ROOTSYS env variable is not set. Install ROOT first. See https://root.cern.ch/)
-endif
-
-ifndef FASTJET
-  $(error FASTJET  env variable is not set. Install FASTJET first. See http://fastjet.fr/)
-endif
-
 include ${ROOTSYS}/etc/Makefile.arch
 
 # Root variables
@@ -33,11 +24,6 @@ objects       = $(patsubst %.cxx,%.o,$(SOURCE_FILES))
 Tasks:    mydict lib
 
 
-tar:
-	rm -f ana.tgz; cd ../; tar -cvzf ana.tgz --exclude='*.o' --exclude='*.root' \
-	--exclude='*.log'  --exclude='*.tup' --exclude='*.eps' --exclude='*.png' --exclude='*.log.gz'\
-	--exclude='main' --exclude='*.root.log.gz' --exclude='*.so' --exclude='*~' --exclude='*.pyc' ana; \
-        mv ana.tgz ana/; cd ana; 
 
 mydict: inc/LParticle.h
 	@rm -f src/CParticle_dict*
@@ -48,15 +34,14 @@ mydict: inc/LParticle.h
 	@rm -f inc/LParticle_dict*
 	@echo "Generating dictionary for LParticle"
 	@rootcint src/LParticle_dict.cxx -c inc/LParticle.h
+	@mkdir -p ./lib
 
 lib:  $(objects)
-	@echo "Making a static library";  
+	@echo "Making a library inside ./lib";  
 	ar rcs ./lib/libmap2rmm_static.a $(objects) 
-	@echo "Making the shared library lib/libmap2rmm.so"; 
 	g++ -shared -fPIC -o ./lib/libmap2rmm.so $(objects)
 
-	
 main: $(objects)
 	$(LD) $(LDFLAGS) $^ $(LIBS) $(OutPutOpt)$@
 clean:
-	        @rm -f *.o lib/* *~ src/*.o src/*~ inc/*~ src/*dict*; echo "Clear.." 
+	        @rm -f *.o  main *~ src/*.o src/*~ inc/*~; echo "Clear.." 

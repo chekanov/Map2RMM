@@ -24,7 +24,7 @@ ROOTGTTLIBS   = $(shell root-config --nonew --glibs)
 # Assign or add variables
 CXXFLAGS     += $(ROOTCFLAGS)
 LIBS         += $(ROOTLIBS)
-LIBS    += -L${FASTJET}/lib -lfastjet -Lmap2rmm/lib -lmap2rmm
+LIBS += -L${FASTJET}/lib -lfastjet -L./map2rmm/lib -lmap2rmm
 LIBS += -L${PROMC}/lib -lpromc -lprotoc -lprotobuf -lprotobuf-lite -lcbook -lz
 
 
