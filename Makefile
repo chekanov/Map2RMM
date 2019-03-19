@@ -2,15 +2,15 @@
 # S.Chekanov (ANL) 
 
 ifndef ROOTSYS 
-$(error ROOTSYS env variable is not set. Install ROOT first)
+$(error ROOTSYS env variable is not set. Install ROOT first. See https://root.cern.ch/)
 endif
 
 ifndef PROMC 
-  $(error LCIO_DIR  env variable is not set. Install LCIO first)
+  $(error ProMC file format to read events from the HepSim repository is not found.   PROMC env variable is not set. Install ProMC first. See https://atlaswww.hep.anl.gov/asc/promc/)
 endif
 
 ifndef FASTJET
-  $(error FASTJET  env variable is not set. Install FASTJET first)
+  $(error FASTJET  env variable is not set. Install FASTJET first. See http://fastjet.fr/)
 endif
 
 

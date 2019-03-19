@@ -1,6 +1,18 @@
 # S.Chekanov
-include ${ROOTSYS}/etc/Makefile.arch
 
+ifndef ROOTSYS
+$(error ROOTSYS env variable is not set. Install ROOT first. See https://root.cern.ch/)
+endif
+
+ifndef PROMC
+  $(error ProMC file format to read events from the HepSim repository is not found.   PROMC env variable is not set. Install ProMC first. See https://atlaswww.hep.anl.gov/asc/promc/)
+endif
+
+ifndef FASTJET
+  $(error FASTJET  env variable is not set. Install FASTJET first. See http://fastjet.fr/)
+endif
+
+include ${ROOTSYS}/etc/Makefile.arch
 
 # Root variables
 ROOTCFLAGS    = $(shell root-config --nonew --cflags)
@@ -10,8 +22,7 @@ ROOTGTTLIBS   = $(shell root-config --nonew --glibs)
 CXXFLAGS     += $(ROOTCFLAGS)
 LIBS         += $(ROOTLIBS)
 
-SOURCE_FILES := $(shell ls -1 *.cxx)
-SOURCE_FILES += $(shell ls -1 src/*.cxx)
+SOURCE_FILES := $(shell ls -1 src/*.cxx)
 
 INCLUDE1= -I./inc
 INCLUDE2= -I.
