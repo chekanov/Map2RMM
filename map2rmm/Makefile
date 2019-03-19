@@ -4,10 +4,6 @@ ifndef ROOTSYS
 $(error ROOTSYS env variable is not set. Install ROOT first. See https://root.cern.ch/)
 endif
 
-ifndef PROMC
-  $(error ProMC file format to read events from the HepSim repository is not found.   PROMC env variable is not set. Install ProMC first. See https://atlaswww.hep.anl.gov/asc/promc/)
-endif
-
 ifndef FASTJET
   $(error FASTJET  env variable is not set. Install FASTJET first. See http://fastjet.fr/)
 endif
@@ -55,9 +51,9 @@ mydict: inc/LParticle.h
 
 lib:  $(objects)
 	@echo "Making a static library";  
-	ar rcs lib/libmap2rmm_static.a $(objects) 
+	ar rcs ./lib/libmap2rmm_static.a $(objects) 
 	@echo "Making the shared library lib/libmap2rmm.so"; 
-	g++ -shared -fPIC -o lib/libmap2rmm.so $(objects)
+	g++ -shared -fPIC -o ./lib/libmap2rmm.so $(objects)
 
 	
 main: $(objects)
