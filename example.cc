@@ -106,6 +106,7 @@ int main(int argc, char **argv)
 	cout << "lepton dR isolation=" << Rlep_iso << endl;
 	cout << "jet    dR isolation=" << Rjet_iso << endl;
 
+        // The RMM is 4t3n (maxTypes(t) maxNumber(n)) 
 	const int maxNumber=3; // max number for each object (MET is not counted)
 	const int maxTypes=4;  // max numbers of types (met not counted)
 	string names[maxTypes+1] = {"MET","j", "#mu", "e", "#gamma"};
@@ -179,7 +180,13 @@ int main(int argc, char **argv)
 	TH2D * h_events = new TH2D("events", "events", mSize, 0, (double)(mSize), mSize, 0, (double)mSize);
 	TProfile2D * h_prof = new TProfile2D("profile", "profile", mSize, 0, (double)(mSize), mSize, 0, (double)mSize, 0, 1000);
 
-	// each seprate accepted event
+        // remember which matrix do you fill
+        TH1D * h_dimensions = new TH1D("dimensions", "(1)maxNumber,(2)maxTypes, (3)mSize",5,0,5);
+        h_dimensions->Fill(1,(float)maxNumber);
+        h_dimensions->Fill(2,(float)maxTypes);
+        h_dimensions->Fill(3,(float)mSize);
+
+	// each accepted event
 	int event=0;
 	const int nevhisto=50;
 	TH2D * h_proje[ nevhisto];
@@ -206,9 +213,15 @@ int main(int argc, char **argv)
 	m_tree->SetAutoFlush(100000);
 	Int_t m_id;
 	std::vector<Double32_t> m_proj;
+        std::vector<UInt_t> m_proj_index1;
+        std::vector<UInt_t> m_proj_index2;
+
 	std::vector<Double32_t> m_multi;
 	m_tree->Branch("id",  &m_id);
-	m_tree->Branch("proj",   &m_proj);
+        m_tree->Branch("proj",   &m_proj);
+        m_tree->Branch("proj_index1",   &m_proj_index1);
+        m_tree->Branch("proj_index2",   &m_proj_index2);
+
 	m_tree->Branch("multiplicity",   &m_multi);
 
 	/*
@@ -489,6 +502,9 @@ int main(int argc, char **argv)
 
 
 			m_proj.clear();
+                        m_proj_index1.clear();
+                        m_proj_index2.clear();
+
 			m_multi.clear();
 			//m_m=muons.size();
 			//m_e=electrons.size();
@@ -517,7 +533,6 @@ int main(int argc, char **argv)
 			}
 
 
-
 			// dijet mass for 2 lead jets
 			if (jets.size()>1) {
 				LParticle LPP1=jets.at(0);
@@ -530,13 +545,11 @@ int main(int argc, char **argv)
 
 
 
-
-			// sort
+			// sort all vectors with objects 
 			if (jets.size()>1)  std::sort(jets.begin(), jets.end(), greater<LParticle>() ) ;
 			if (muons.size()>1) std::sort(muons.begin(), muons.end(), greater<LParticle>() ) ;
 			if (electrons.size()>1) std::sort(electrons.begin(), electrons.end(), greater<LParticle>() ) ;
 			if (photons.size()>1) std::sort(photons.begin(), photons.end(), greater<LParticle>() ) ;
-
 
 
 			// we accept non-empty events only!
@@ -571,9 +584,8 @@ int main(int argc, char **argv)
 			};
 
 
-
+                        // return rapidity-mass matrix, RMM,  (with zeros)
 			float** projArray =  map2rmm(CMS, maxNumber, maxTypes, missing, jets, muons, electrons, photons);
-
 
 
 			// triangular matrix is a special kind of square matrix.
@@ -632,7 +644,9 @@ int main(int argc, char **argv)
 
 
 			int count=0;
-			// only non-zero events are counts
+                        int non_empty=0;
+
+			// only non-zero events 
 			for (int h = 0; h < mSize; h++) {
 				for (int w = 0; w < mSize; w++) {
 					float dd=projArray[w][h];
@@ -662,6 +676,13 @@ int main(int argc, char **argv)
 					if (dd != 0) {
 						h_proj->Fill((Names2.at(i1)).c_str(),  (Names1.at(i2)).c_str(),dd);
 						h_events->Fill((Names2.at(i1)).c_str(), (Names1.at(i2)).c_str(),1.0);
+
+                                                // prepare for output. Fill non-zero values, row and column index 
+                                                m_proj.push_back(dd);
+                                                m_proj_index1.push_back( w );
+                                                m_proj_index2.push_back( h );
+                                                non_empty++;
+
 					}
 
 					array[count]=dd;
@@ -669,13 +690,17 @@ int main(int argc, char **argv)
 					//cout << i << " " <<  array[i] << endl;
 				}
 			}
-			for (int i = 0; i < nMax; i++) m_proj.push_back( array[i] );
+
+                        //fill this matrix if you want to store zeros too!
+			//for (int i = 0; i < nMax; i++) m_proj.push_back( array[i] );
 
 			delete [] arrayM;
 			delete [] array;
                         for (int w1 = 0; w1 < mSize; w1++)  delete[] projArray[w1];
                         delete[] projArray;
 
+
+                        if (non_empty>0) h_debug->Fill("Final NonEmpty",1.0);
 
 			event++;
 			m_tree->Fill();
