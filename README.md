@@ -58,6 +58,10 @@ The output with RMM matrices is "output.root".
 Typically,  you need "inputNN" tree which contains non-zero values of RMM (with indices). We keep only non-zero values since the RMM matrix is sparse. You need to add zeros if you want to get the real matrix.
 The script "prepare.py" gives an example of how to unpack the matrix stored inside this root file.
   
+## Reference
+
+This algorithm is described in: S.Chekanov "Imaging particle collision data for event classification using machine learning",  Nucl Inst. and Meth. in Phys. Research (NIMA), A931 (2019) p92 (https://arxiv.org/abs/1805.11650).
+
 
 S.Chekanov (ANL) 
 
