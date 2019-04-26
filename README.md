@@ -62,6 +62,11 @@ The script "prepare.py" gives an example of how to unpack the matrix stored insi
 
 This algorithm is described in: S.Chekanov "Imaging particle collision data for event classification using machine learning",  Nucl Inst. and Meth. in Phys. Research (NIMA), A931 (2019) p92 (https://arxiv.org/abs/1805.11650).
 
+Different use cases for classification of experimental data using this algorithm were discussed
+in the article: 
+"Machine learning using rapidity-mass matrices for event classification problems in HEP", 
+(S.V.Chekanov),  ANL-HEP-147750, https://arxiv.org/abs/1810.06669
+ 
 
 S.Chekanov (ANL) 
 
